@@ -15,7 +15,7 @@ public class ExcelReaderTest
     public void testFile() throws Exception
     {
         ExcelReader excelReader = new ExcelReader();
-        List<Task> taskList = excelReader.read(getTestFile("TestExcel.xlsx").getAbsolutePath(), Task.class);
+        List<Task> taskList = excelReader.read(getTestFile("TestExcel.xlsx"), Task.class);
         Assert.assertEquals(10,taskList.size());
     }
 

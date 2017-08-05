@@ -27,9 +27,8 @@ public class ExcelReader
         return tList;
     }
 
-    public <T extends BaseExcel> List<T> read(String excelFileName, Class<T> clazz) throws Exception
+    public <T extends BaseExcel> List<T> read(File file, Class<T> clazz) throws Exception
     {
-        File file = new File(excelFileName);
         List<T> tList = new ArrayList<>();
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
         read(clazz, tList, xssfWorkbook);

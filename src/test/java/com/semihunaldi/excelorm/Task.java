@@ -20,7 +20,7 @@ public class Task extends BaseExcel
     private Integer age;
 
     @ExcelColumn(col = 3)
-    private Double price;
+    private Double amount;
 
     @ExcelColumn(col = 4)
     private String description;
