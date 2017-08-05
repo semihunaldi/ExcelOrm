@@ -9,7 +9,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
 
-public class ExcelReaderTest
+public class ExcelReaderTest extends BaseTest
 {
     @Test
     public void testFile() throws Exception
@@ -27,11 +27,5 @@ public class ExcelReaderTest
         InputStream inputStream = new FileInputStream(file);
         List<Task> taskList = excelReader.read(inputStream,Task.class);
         Assert.assertEquals(10,taskList.size());
-    }
-
-    private File getTestFile(String fileName)
-    {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(classLoader.getResource(fileName).getFile());
     }
 }

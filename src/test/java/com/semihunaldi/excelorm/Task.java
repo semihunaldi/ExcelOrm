@@ -10,18 +10,18 @@ import lombok.EqualsAndHashCode;
 @Data
 public class Task extends BaseExcel
 {
-    @ExcelColumn(col = 0)
+    @ExcelColumn(col = 0 , columnName = "Name")
     private String firstName;
 
-    @ExcelColumn(col = 1)
+    @ExcelColumn(col = 1 , columnName = "Last Name")
     private String lastName;
 
-    @ExcelColumn(col = 2)
+    @ExcelColumn(col = 2 , columnName = "Age")
     private Integer age;
 
-    @ExcelColumn(col = 3)
+    @ExcelColumn(col = 3 , columnName = "Amount")
     private Double amount;
 
-    @ExcelColumn(col = 4)
+    @ExcelColumn(col = 4 , columnName = "Description")
     private String description;
 }
