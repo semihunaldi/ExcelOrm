@@ -45,19 +45,19 @@ Experimental Excel ORM library
 @Data
 public class Task extends BaseExcel
 {
-    @ExcelColumn(col = 0)
+    @ExcelColumn(col = 0 , columnName = "Name")
     private String firstName;
 
-    @ExcelColumn(col = 1)
+    @ExcelColumn(col = 1 , columnName = "Last Name")
     private String lastName;
 
-    @ExcelColumn(col = 2)
+    @ExcelColumn(col = 2 , columnName = "Age")
     private Integer age;
 
-    @ExcelColumn(col = 3)
+    @ExcelColumn(col = 3 , columnName = "Amount")
     private Double amount;
 
-    @ExcelColumn(col = 4)
+    @ExcelColumn(col = 4 , columnName = "Description")
     private String description;
 }
 ```
@@ -67,7 +67,11 @@ public class Test
 {
     public static void main(String[] args)
     {
+        ExcelReader excelReader = new ExcelReader();
         List<Task> taskList = excelReader.read(new File("/some/path/Excel.xlsx"), Task.class);
+        //
+        ExcelWriter excelWriter = new ExcelWriter();
+        excelWriter.write(new File("/some/path/Excel_new.xlsx"),taskList,Task.class);
     }
 }
 ```
