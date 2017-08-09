@@ -11,4 +11,5 @@ public @interface ExcelColumn
 {
     int col();
     String columnName();
+    String dateFormat() default "";
 }

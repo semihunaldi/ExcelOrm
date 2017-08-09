@@ -2,18 +2,23 @@ package com.semihunaldi.excelorm;
 
 import com.semihunaldi.excelorm.annotations.Excel;
 import com.semihunaldi.excelorm.annotations.ExcelColumn;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ExcelReader
@@ -136,6 +141,10 @@ public class ExcelReader
                 cell.setCellType(CellType.BOOLEAN);
                 return cell.getBooleanCellValue();
             }
+            else if(type == Date.class)
+            {
+                return tryToGetDateCellValue(cell,field);
+            }
             else
             {
                 cell.setCellType(CellType.STRING);
@@ -145,6 +154,34 @@ public class ExcelReader
         catch (Exception e)
         {
             return null;
+        }
+    }
+
+    private Date tryToGetDateCellValue(XSSFCell cell, Field field)
+    {
+        try
+        {
+            return cell.getDateCellValue();
+        }
+        catch (Exception e)
+        {
+            try
+            {
+                ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
+                if(annotation != null && StringUtils.isNotBlank(annotation.dateFormat()))
+                {
+                    cell.setCellType(CellType.STRING);
+                    String stringCellValue = cell.getStringCellValue();
+                    DateTimeFormatter dtf = DateTimeFormat.forPattern(annotation.dateFormat());
+                    DateTime dateTime = dtf.parseDateTime(stringCellValue);
+                    return dateTime.toDate();
+                }
+                return null;
+            }
+            catch (Exception e1)
+            {
+                return null;
+            }
         }
     }
 

@@ -5,6 +5,8 @@ import com.semihunaldi.excelorm.annotations.ExcelColumn;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
+
 @EqualsAndHashCode(callSuper = true)
 @Excel(firstRow = 1,sheet = 0, firstCol = 0)
 @Data
@@ -24,4 +26,7 @@ public class Task extends BaseExcel
 
     @ExcelColumn(col = 4 , columnName = "Description")
     private String description;
+
+    @ExcelColumn(col = 5, columnName = "Date", dateFormat = "dd/MM/yyyy HH:mm")
+    private Date date;
 }
