@@ -2,6 +2,7 @@ package com.semihunaldi.excelorm;
 
 import com.semihunaldi.excelorm.annotations.Excel;
 import com.semihunaldi.excelorm.annotations.ExcelColumn;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -9,11 +10,13 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.joda.time.DateTime;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
@@ -23,15 +26,15 @@ public class ExcelWriter
 
     public <T extends BaseExcel> void write(File file, List<T> list, Class<T> clazz) throws Exception
     {
-        if(!list.isEmpty())
+        if (!list.isEmpty())
         {
             Excel excelAnnotation = clazz.getAnnotation(Excel.class);
             if (excelAnnotation != null)
             {
-                if(file.exists())
+                if (file.exists())
                 {
                     XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
-                    write(excelAnnotation, xssfWorkbook,list, clazz,false);
+                    write(excelAnnotation, xssfWorkbook, list, clazz, false);
                     FileOutputStream out = new FileOutputStream(file);
                     xssfWorkbook.write(out);
                     out.close();
@@ -40,7 +43,7 @@ public class ExcelWriter
                 else
                 {
                     XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
-                    write(excelAnnotation, xssfWorkbook,list, clazz,true);
+                    write(excelAnnotation, xssfWorkbook, list, clazz, true);
                     FileOutputStream out = new FileOutputStream(file);
                     xssfWorkbook.write(out);
                     out.close();
@@ -53,7 +56,7 @@ public class ExcelWriter
     {
         int sheetNum = excelAnnotation.sheet();
         XSSFSheet sheet;
-        if(newWorkbook)
+        if (newWorkbook)
         {
             sheet = xssfWorkbook.createSheet();
         }
@@ -61,28 +64,28 @@ public class ExcelWriter
         {
             sheet = xssfWorkbook.getSheetAt(sheetNum);
         }
-        clearSheet(xssfWorkbook,sheetNum);
-        createHeader(sheet,excelAnnotation.firstRow(), clazz);
+        clearSheet(xssfWorkbook, sheetNum);
+        createHeader(sheet, excelAnnotation.firstRow(), clazz);
         TreeMap<Integer, Field> fieldsMap = getFieldsMap(clazz);
         for (T t : list)
         {
-            XSSFRow row = sheet.createRow(sheet.getLastRowNum()+1);
+            XSSFRow row = sheet.createRow(sheet.getLastRowNum() + 1);
             for (Integer integer : fieldsMap.keySet())
             {
                 XSSFCell cell = row.createCell(integer);
-                setCellValue(cell,fieldsMap.get(integer),t);
+                setCellValue(cell, fieldsMap.get(integer), t);
             }
         }
     }
 
     private TreeMap<Integer, Field> getFieldsMap(Class<?> clazz)
     {
-        TreeMap<Integer,Field> fieldsMap = new TreeMap<>();
+        TreeMap<Integer, Field> fieldsMap = new TreeMap<>();
         List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(clazz, ExcelColumn.class);
         for (Field field : fieldsListWithAnnotation)
         {
             ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
-            fieldsMap.put(annotation.col(),field);
+            fieldsMap.put(annotation.col(), field);
         }
         return fieldsMap;
     }
@@ -100,14 +103,14 @@ public class ExcelWriter
         }
     }
 
-    private TreeMap<Integer,String> getHeaderNames(Class<?> clazz)
+    private TreeMap<Integer, String> getHeaderNames(Class<?> clazz)
     {
-        TreeMap<Integer,String> headerMap = new TreeMap<>();
+        TreeMap<Integer, String> headerMap = new TreeMap<>();
         List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(clazz, ExcelColumn.class);
         for (Field field : fieldsListWithAnnotation)
         {
             ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
-            headerMap.put(annotation.col(),annotation.columnName());
+            headerMap.put(annotation.col(), annotation.columnName());
         }
         return headerMap;
     }
@@ -115,8 +118,8 @@ public class ExcelWriter
     private void clearSheet(XSSFWorkbook wb, int sheetNum)
     {
         XSSFSheet sheet = wb.getSheetAt(sheetNum);
-        Iterator<Row> rowIte =  sheet.iterator();
-        while(rowIte.hasNext())
+        Iterator<Row> rowIte = sheet.iterator();
+        while (rowIte.hasNext())
         {
             rowIte.next();
             rowIte.remove();
@@ -165,6 +168,25 @@ public class ExcelWriter
                 cell.setCellType(CellType.NUMERIC);
                 boolean value = (boolean) field.get(t);
                 cell.setCellValue(value);
+            }
+            else if (type == Date.class)
+            {
+                Date value = (Date) field.get(t);
+                ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
+                if (annotation != null && StringUtils.isNotBlank(annotation.dateFormat()))
+                {
+                    try
+                    {
+                        cell.setCellType(CellType.STRING);
+                        DateTime dateTime = new DateTime(value);
+                        String dateString = dateTime.toString(annotation.dateFormat());
+                        cell.setCellValue(dateString);
+                    }
+                    catch (Exception e1)
+                    {
+                        //swallow
+                    }
+                }
             }
             else
             {

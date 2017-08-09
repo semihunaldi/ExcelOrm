@@ -59,6 +59,9 @@ public class Task extends BaseExcel
 
     @ExcelColumn(col = 4 , columnName = "Description")
     private String description;
+    
+    @ExcelColumn(col = 5, columnName = "Date", dateFormat = "dd/MM/yyyy HH:mm")
+    private Date date;
 }
 ```
 
