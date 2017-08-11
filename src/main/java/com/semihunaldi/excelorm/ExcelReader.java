@@ -161,24 +161,34 @@ public class ExcelReader
     {
         try
         {
-            return cell.getDateCellValue();
+            ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
+            if(annotation != null && StringUtils.isNotBlank(annotation.dateFormat()))
+            {
+                cell.setCellType(CellType.STRING);
+                String stringCellValue = cell.getStringCellValue();
+                DateTimeFormatter dtf = DateTimeFormat.forPattern(annotation.dateFormat());
+                DateTime dateTime = dtf.parseDateTime(stringCellValue);
+                return dateTime.toDate();
+            }
+            else
+            {
+                try
+                {
+                    return cell.getDateCellValue();
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
+            }
         }
-        catch (Exception e)
+        catch (Exception e1)
         {
             try
             {
-                ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
-                if(annotation != null && StringUtils.isNotBlank(annotation.dateFormat()))
-                {
-                    cell.setCellType(CellType.STRING);
-                    String stringCellValue = cell.getStringCellValue();
-                    DateTimeFormatter dtf = DateTimeFormat.forPattern(annotation.dateFormat());
-                    DateTime dateTime = dtf.parseDateTime(stringCellValue);
-                    return dateTime.toDate();
-                }
-                return null;
+                return cell.getDateCellValue();
             }
-            catch (Exception e1)
+            catch (Exception e)
             {
                 return null;
             }
