@@ -38,6 +38,7 @@ public class ExcelWriter
                     FileOutputStream out = new FileOutputStream(file);
                     xssfWorkbook.write(out);
                     out.close();
+                    xssfWorkbook.close();
                     //TODO getting fatal memory error while trying to overwrite file.
                 }
                 else
@@ -47,6 +48,7 @@ public class ExcelWriter
                     FileOutputStream out = new FileOutputStream(file);
                     xssfWorkbook.write(out);
                     out.close();
+                    xssfWorkbook.close();
                 }
             }
         }
