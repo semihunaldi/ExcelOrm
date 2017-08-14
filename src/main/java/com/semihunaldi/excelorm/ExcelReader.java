@@ -37,7 +37,8 @@ public class ExcelReader
         List<T> tList = new ArrayList<>();
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
         read(clazz, tList, xssfWorkbook);
-        xssfWorkbook.getPackage().revert();
+//        xssfWorkbook.getPackage().revert();
+        xssfWorkbook.close();
         return tList;
     }
 
