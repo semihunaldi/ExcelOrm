@@ -36,7 +36,7 @@ public class ExcelWriter
         Excel excelAnnotation = clazz.getAnnotation(Excel.class);
         if(excelAnnotation != null)
         {
-            String sheetName = excelAnnotation.sheetName() + excelAnnotation.sheet();
+            String sheetName = excelAnnotation.sheetName();
             clearSheet(workbook, sheetName);
             createNewSheetAndFill(list, clazz, workbook, excelAnnotation, sheetName);
 

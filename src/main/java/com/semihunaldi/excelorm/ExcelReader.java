@@ -46,10 +46,9 @@ public class ExcelReader
         Excel excelAnnotation = clazz.getAnnotation(Excel.class);
         if (excelAnnotation != null)
         {
-            int sheet = excelAnnotation.sheet();
             int firstRow = excelAnnotation.firstRow();
             int firstCol = excelAnnotation.firstCol();
-            String sheetName = excelAnnotation.sheetName() + sheet;
+            String sheetName = excelAnnotation.sheetName();
             XSSFSheet xssfSheet = xssfWorkbook.getSheet(sheetName);
             for (int rows = firstRow; rows < xssfSheet.getPhysicalNumberOfRows(); rows++)
             {
