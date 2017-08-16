@@ -19,6 +19,29 @@ public class ExcelWriterTest extends BaseTest
     }
 
     @Test
+    public void testMultipleSheets() throws Exception
+    {
+        ExcelReader excelReader = new ExcelReader();
+        List<Task> taskList = excelReader.read(getTestFile(), Task.class);
+        List<Person> personList = excelReader.read(getTestFile(), Person.class);
+        taskList.remove(2);
+        personList.remove(2);
+        ExcelWriter excelWriter = new ExcelWriter();
+        excelWriter.write(getTestFile(),taskList,Task.class);
+        excelWriter.write(getTestFile(),personList,Person.class);
+    }
+
+    @Test
+    public void testExcelDataWithMiddleOfTheExcel() throws Exception
+    {
+        ExcelReader excelReader = new ExcelReader();
+        List<TaskExcelAtMiddle> taskList = excelReader.read(getTestFile("TaskExcel.xlsx"), TaskExcelAtMiddle.class);
+        taskList.remove(7);
+        ExcelWriter excelWriter = new ExcelWriter();
+        excelWriter.write(getTestFile(),taskList,TaskExcelAtMiddle.class);
+    }
+
+    @Test
     public void testNonExisting() throws Exception
     {
         ExcelReader excelReader = new ExcelReader();
@@ -27,6 +50,6 @@ public class ExcelWriterTest extends BaseTest
         taskList.get(2).setAge(888);
         taskList.get(5).setAmount(88.9);
         ExcelWriter excelWriter = new ExcelWriter();
-        excelWriter.write(getTestFile("TaskExcel_new.xlsx"),taskList,Task.class);
+        excelWriter.write(getTestFile(),taskList,Task.class);
     }
 }

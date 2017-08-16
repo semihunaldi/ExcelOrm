@@ -23,6 +23,7 @@ import java.util.List;
 
 public class ExcelReader
 {
+    //TODO throw IllegalExcelArgumentException for better exception handling
     public <T extends BaseExcel> List<T> read(InputStream inputStream, Class<T> clazz) throws Exception
     {
         List<T> tList = new LinkedList<>();
@@ -46,25 +47,32 @@ public class ExcelReader
         Excel excelAnnotation = clazz.getAnnotation(Excel.class);
         if (excelAnnotation != null)
         {
+            Validator.validate(excelAnnotation);
             int firstRow = excelAnnotation.firstRow();
             int firstCol = excelAnnotation.firstCol();
             String sheetName = excelAnnotation.sheetName();
             XSSFSheet xssfSheet = xssfWorkbook.getSheet(sheetName);
-            for (int rows = firstRow; rows < xssfSheet.getPhysicalNumberOfRows(); rows++)
+            for (int rows = firstRow; rows < firstRow + xssfSheet.getPhysicalNumberOfRows(); rows++)
             {
                 T t = clazz.newInstance();
                 updateRowField(t,clazz,rows);
                 XSSFRow row = xssfSheet.getRow(rows);
-                for (int cells = firstCol; cells < row.getPhysicalNumberOfCells(); cells++)
+                if(row != null)
                 {
-                    XSSFCell cell = row.getCell(cells);
-                    Field field = findFieldByColNumber(clazz, cells);
-                    if (field != null)
+                    for (int cells = firstCol; cells < firstCol + row.getPhysicalNumberOfCells(); cells++)
                     {
-                        setFieldValue(t, cell, field);
+                        XSSFCell cell = row.getCell(cells);
+                        if(cell != null)
+                        {
+                            Field field = findFieldByColNumber(clazz, cells,firstCol);
+                            if (field != null)
+                            {
+                                setFieldValue(t, cell, field);
+                            }
+                        }
                     }
+                    tList.add(t);
                 }
-                tList.add(t);
             }
         }
     }
@@ -90,13 +98,13 @@ public class ExcelReader
         }
     }
 
-    private Field findFieldByColNumber(Class clazz, int col)
+    private Field findFieldByColNumber(Class clazz, int col, int firstCol)
     {
         List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(clazz, ExcelColumn.class);
         for (Field field : fieldsListWithAnnotation)
         {
             ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
-            if (annotation.col() == col)
+            if (firstCol + annotation.col() == col)
             {
                 return field;
             }

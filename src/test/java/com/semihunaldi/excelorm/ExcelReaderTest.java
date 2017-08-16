@@ -38,4 +38,12 @@ public class ExcelReaderTest extends BaseTest
         Assert.assertEquals(10,taskList.size());
         Assert.assertEquals(4, personList.size());
     }
+
+    @Test
+    public void testExcelDataWithMiddleOfTheExcel() throws Exception
+    {
+        ExcelReader excelReader = new ExcelReader();
+        List<TaskExcelAtMiddle> taskList = excelReader.read(getTestFile("TaskExcel.xlsx"), TaskExcelAtMiddle.class);
+        Assert.assertEquals(10,taskList.size());
+    }
 }

@@ -20,6 +20,7 @@ import java.util.TreeMap;
 
 public class ExcelWriter
 {
+    //TODO throw IllegalExcelArgumentException for better exception handling
     public <T extends BaseExcel> void write(File file, List<T> list, Class<T> clazz) throws IOException
     {
         XSSFWorkbook workbook;
@@ -36,10 +37,10 @@ public class ExcelWriter
         Excel excelAnnotation = clazz.getAnnotation(Excel.class);
         if(excelAnnotation != null)
         {
+            Validator.validate(excelAnnotation);
             String sheetName = excelAnnotation.sheetName();
             clearSheet(workbook, sheetName);
             createNewSheetAndFill(list, clazz, workbook, excelAnnotation, sheetName);
-
             writeFileOut(file, workbook, fileInputStream);
         }
     }
@@ -47,14 +48,14 @@ public class ExcelWriter
     private <T extends BaseExcel> void createNewSheetAndFill(List<T> list, Class<T> clazz, XSSFWorkbook workbook, Excel excelAnnotation, String sheetName)
     {
         XSSFSheet sheet = workbook.createSheet(sheetName);
-        createHeader(sheet, excelAnnotation.firstRow(), clazz);
+        createHeader(sheet, excelAnnotation, clazz);
         TreeMap<Integer, Field> fieldsMap = getFieldsMap(clazz);
         for (T t : list)
         {
             XSSFRow row = sheet.createRow(sheet.getLastRowNum() + 1);
             for (Integer integer : fieldsMap.keySet())
             {
-                XSSFCell cell = row.createCell(integer);
+                XSSFCell cell = row.createCell(integer + excelAnnotation.firstCol());
                 setCellValue(cell, fieldsMap.get(integer), t);
             }
         }
@@ -92,14 +93,13 @@ public class ExcelWriter
         return fieldsMap;
     }
 
-    private void createHeader(XSSFSheet sheet, int firstRow, Class<?> clazz)
+    private void createHeader(XSSFSheet sheet, Excel excelAnnotation, Class<?> clazz)
     {
-        XSSFRow row = sheet.createRow(firstRow - 1);
-
+        XSSFRow row = sheet.createRow(excelAnnotation.firstRow() - 1);
         TreeMap<Integer, String> headerNames = getHeaderNames(clazz);
         for (Integer integer : headerNames.keySet())
         {
-            XSSFCell cell = row.createCell(integer);
+            XSSFCell cell = row.createCell(integer + excelAnnotation.firstCol());
             cell.setCellType(CellType.STRING);
             cell.setCellValue(headerNames.get(integer));
         }
