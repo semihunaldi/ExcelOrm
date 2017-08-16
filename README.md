@@ -1,33 +1,5 @@
 Experimental Excel ORM library
 
-TODO : getting fatal memory dump while trying to overwrite file.
-``` text
-#
-# A fatal error has been detected by the Java Runtime Environment:
-#
-#  SIGBUS (0xa) at pc=0x0000000107d0be92, pid=1083, tid=0x0000000000001c03
-#
-# JRE version: Java(TM) SE Runtime Environment (8.0_144-b01) (build 1.8.0_144-b01)
-# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.144-b01 mixed mode bsd-amd64 compressed oops)
-# Problematic frame:
-# C  [libzip.dylib+0x2e92]  newEntry+0x154
-#
-# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
-#
-
-Stack: [0x0000700000aa0000,0x0000700000ba0000],  sp=0x0000700000b9de50,  free space=1015k
-Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
-C  [libzip.dylib+0x2e92]  newEntry+0x154
-C  [libzip.dylib+0x352d]  ZIP_GetEntry2+0xd4
-C  [libzip.dylib+0x2238]  Java_java_util_zip_ZipFile_getEntry+0xcf
-j  java.util.zip.ZipFile.getEntry(J[BZ)J+0
-j  java.util.zip.ZipFile.getInputStream(Ljava/util/zip/ZipEntry;)Ljava/io/InputStream;+88
-j  org.apache.poi.openxml4j.util.ZipSecureFile.getInputStream(Ljava/util/zip/ZipEntry;)Ljava/io/InputStream;+2
-...
-...
-...
-...
-```
 <table>
   <tr>
     <th>Name</th>
