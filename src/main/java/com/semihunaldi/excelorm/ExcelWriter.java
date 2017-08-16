@@ -12,8 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.joda.time.DateTime;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.Date;
@@ -23,59 +22,44 @@ import java.util.TreeMap;
 
 public class ExcelWriter
 {
-
-    public <T extends BaseExcel> void write(File file, List<T> list, Class<T> clazz) throws Exception
+    public <T extends BaseExcel> void write(File file, List<T> list, Class<T> clazz)
+            throws FileNotFoundException, IOException
     {
-        if (!list.isEmpty())
-        {
-            Excel excelAnnotation = clazz.getAnnotation(Excel.class);
-            if (excelAnnotation != null)
-            {
-                if (file.exists())
-                {
-                    XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
-                    write(excelAnnotation, xssfWorkbook, list, clazz, false);
-                    FileOutputStream out = new FileOutputStream(file);
-                    xssfWorkbook.write(out);
-                    out.close();
-                    //TODO getting fatal memory error while trying to overwrite file.
-                }
-                else
-                {
-                    XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
-                    write(excelAnnotation, xssfWorkbook, list, clazz, true);
-                    FileOutputStream out = new FileOutputStream(file);
-                    xssfWorkbook.write(out);
-                    out.close();
-                }
-            }
+        XSSFWorkbook workbook;
+        FileInputStream fileInputStream=null;
+        if (file.exists()) {
+            fileInputStream = new FileInputStream(file);
+            workbook = new XSSFWorkbook(fileInputStream);
+        } else {
+            workbook = new XSSFWorkbook();
         }
-    }
 
-    private <T extends BaseExcel> void write(Excel excelAnnotation, XSSFWorkbook xssfWorkbook, List<T> list, Class<?> clazz, boolean newWorkbook)
-    {
-        int sheetNum = excelAnnotation.sheet();
-        XSSFSheet sheet;
-        if (newWorkbook)
-        {
-            sheet = xssfWorkbook.createSheet();
+        Excel excelAnnotation = clazz.getAnnotation(Excel.class);
+        // Clearing sheet specified by name
+        String sheetName = new StringBuilder().append(excelAnnotation.name()).append(excelAnnotation.sheet()).toString();
+        int sheetIndex = workbook.getSheetIndex(sheetName);
+        if (sheetIndex !=-1) {
+            workbook.removeSheetAt(sheetIndex);
         }
-        else
-        {
-            sheet = xssfWorkbook.getSheetAt(sheetNum);
-        }
-        clearSheet(xssfWorkbook, sheetNum);
+        // Creating new one
+        XSSFSheet sheet = workbook.createSheet(sheetName);
         createHeader(sheet, excelAnnotation.firstRow(), clazz);
         TreeMap<Integer, Field> fieldsMap = getFieldsMap(clazz);
-        for (T t : list)
-        {
+        for (T t : list) {
             XSSFRow row = sheet.createRow(sheet.getLastRowNum() + 1);
-            for (Integer integer : fieldsMap.keySet())
-            {
+            for (Integer integer : fieldsMap.keySet()) {
                 XSSFCell cell = row.createCell(integer);
                 setCellValue(cell, fieldsMap.get(integer), t);
             }
         }
+
+        if (fileInputStream!=null) {
+            fileInputStream.close();
+        }
+
+        FileOutputStream outFile =new FileOutputStream(file);
+        workbook.write(outFile);
+        outFile.close();
     }
 
     private TreeMap<Integer, Field> getFieldsMap(Class<?> clazz)

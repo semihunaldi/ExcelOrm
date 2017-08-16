@@ -4,9 +4,17 @@ import java.io.File;
 
 public abstract class BaseTest
 {
-    File getTestFile(String fileName)
+    private static String fileName = "TaskExcel.xlsx";
+
+    File getTestFile()
     {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(classLoader.getResource(fileName).getFile());
+    }
+
+    File getTestFile(String newfileName)
+    {
+        File testFile = getTestFile();
+        return new File(testFile.getParent(),newfileName);
     }
 }

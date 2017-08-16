@@ -17,15 +17,15 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ExcelReader
 {
     public <T extends BaseExcel> List<T> read(InputStream inputStream, Class<T> clazz) throws Exception
     {
-        List<T> tList = new ArrayList<>();
+        List<T> tList = new LinkedList<>();
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(inputStream);
         read(clazz, tList, xssfWorkbook);
         xssfWorkbook.getPackage().revert();
@@ -34,7 +34,7 @@ public class ExcelReader
 
     public <T extends BaseExcel> List<T> read(File file, Class<T> clazz) throws Exception
     {
-        List<T> tList = new ArrayList<>();
+        List<T> tList = new LinkedList<>();
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
         read(clazz, tList, xssfWorkbook);
         xssfWorkbook.getPackage().revert();
@@ -49,7 +49,8 @@ public class ExcelReader
             int sheet = excelAnnotation.sheet();
             int firstRow = excelAnnotation.firstRow();
             int firstCol = excelAnnotation.firstCol();
-            XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(sheet);
+            String sheetName = new StringBuilder().append(excelAnnotation.name()).append(excelAnnotation.sheet()).toString();
+            XSSFSheet xssfSheet = xssfWorkbook.getSheet(sheetName);
             for (int rows = firstRow; rows < xssfSheet.getPhysicalNumberOfRows(); rows++)
             {
                 T t = clazz.newInstance();
