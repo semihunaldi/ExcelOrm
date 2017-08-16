@@ -2,8 +2,10 @@ package com.semihunaldi.excelorm;
 
 import com.semihunaldi.excelorm.annotations.Excel;
 import com.semihunaldi.excelorm.annotations.ExcelColumn;
+import com.semihunaldi.excelorm.exceptions.IllegalExcelArgumentException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -14,6 +16,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
@@ -23,8 +26,7 @@ import java.util.List;
 
 public class ExcelReader
 {
-    //TODO throw IllegalExcelArgumentException for better exception handling
-    public <T extends BaseExcel> List<T> read(InputStream inputStream, Class<T> clazz) throws Exception
+    public <T extends BaseExcel> List<T> read(InputStream inputStream, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException, IOException
     {
         List<T> tList = new LinkedList<>();
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(inputStream);
@@ -33,7 +35,7 @@ public class ExcelReader
         return tList;
     }
 
-    public <T extends BaseExcel> List<T> read(File file, Class<T> clazz) throws Exception
+    public <T extends BaseExcel> List<T> read(File file, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException, IOException, InvalidFormatException
     {
         List<T> tList = new LinkedList<>();
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
@@ -42,7 +44,7 @@ public class ExcelReader
         return tList;
     }
 
-    private <T extends BaseExcel> void read(Class<T> clazz, List<T> tList, XSSFWorkbook xssfWorkbook) throws InstantiationException, IllegalAccessException
+    private <T extends BaseExcel> void read(Class<T> clazz, List<T> tList, XSSFWorkbook xssfWorkbook) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException
     {
         Excel excelAnnotation = clazz.getAnnotation(Excel.class);
         if (excelAnnotation != null)

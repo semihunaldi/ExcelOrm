@@ -2,6 +2,7 @@ package com.semihunaldi.excelorm;
 
 import com.semihunaldi.excelorm.annotations.Excel;
 import com.semihunaldi.excelorm.annotations.ExcelColumn;
+import com.semihunaldi.excelorm.exceptions.IllegalExcelArgumentException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.poi.ss.usermodel.CellType;
@@ -20,8 +21,7 @@ import java.util.TreeMap;
 
 public class ExcelWriter
 {
-    //TODO throw IllegalExcelArgumentException for better exception handling
-    public <T extends BaseExcel> void write(File file, List<T> list, Class<T> clazz) throws IOException
+    public <T extends BaseExcel> void write(File file, List<T> list, Class<T> clazz) throws IOException, IllegalExcelArgumentException
     {
         XSSFWorkbook workbook;
         FileInputStream fileInputStream = null;

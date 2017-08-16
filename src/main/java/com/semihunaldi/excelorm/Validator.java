@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Validator
 {
-    public static void validate(Excel excelAnnotation)
+    public static void validate(Excel excelAnnotation) throws IllegalExcelArgumentException
     {
         if(StringUtils.isBlank(excelAnnotation.sheetName()))
         {

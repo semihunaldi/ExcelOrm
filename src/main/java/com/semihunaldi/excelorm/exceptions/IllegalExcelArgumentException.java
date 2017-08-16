@@ -1,6 +1,6 @@
 package com.semihunaldi.excelorm.exceptions;
 
-public class IllegalExcelArgumentException extends RuntimeException
+public class IllegalExcelArgumentException extends Exception
 {
     public IllegalExcelArgumentException(String message)
     {
