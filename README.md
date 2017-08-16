@@ -1,5 +1,14 @@
 Experimental Excel ORM library
 
+##### Limitations
+* Every sheet maps to only _ONE_ POJO.
+* Sadly, every time you need to update any data, whole sheet of the excel will be rewritten. This will be a major problem if data is huge. 
+* Only String, Integer, Double, BigInteger, Long, Boolean, Date classes are supported.
+
+
+***
+
+
 <table>
   <tr>
     <th>Name</th>
@@ -45,7 +54,7 @@ Experimental Excel ORM library
 
 
 ```java
-@Excel(firstRow = 1,sheet = 0, firstCol = 0)
+@Excel(firstRow = 1, firstCol = 0, sheetName = "Tasks")
 @Data
 public class Task extends BaseExcel
 {
