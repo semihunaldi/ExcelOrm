@@ -28,4 +28,14 @@ public class ExcelReaderTest extends BaseTest
         List<Task> taskList = excelReader.read(inputStream,Task.class);
         Assert.assertEquals(10,taskList.size());
     }
+
+    @Test
+    public void testMultipleSheets() throws Exception
+    {
+        ExcelReader excelReader = new ExcelReader();
+        List<Task> taskList = excelReader.read(getTestFile(), Task.class);
+        List<Person> personList = excelReader.read(getTestFile(), Person.class);
+        Assert.assertEquals(10,taskList.size());
+        Assert.assertEquals(4, personList.size());
+    }
 }
