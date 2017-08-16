@@ -5,7 +5,6 @@ import com.semihunaldi.excelorm.annotations.ExcelColumn;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -16,48 +15,67 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
 public class ExcelWriter
 {
-    public <T extends BaseExcel> void write(File file, List<T> list, Class<T> clazz)
-            throws FileNotFoundException, IOException
+    public <T extends BaseExcel> void write(File file, List<T> list, Class<T> clazz) throws IOException
     {
         XSSFWorkbook workbook;
-        FileInputStream fileInputStream=null;
-        if (file.exists()) {
+        FileInputStream fileInputStream = null;
+        if (file.exists())
+        {
             fileInputStream = new FileInputStream(file);
             workbook = new XSSFWorkbook(fileInputStream);
-        } else {
+        }
+        else
+        {
             workbook = new XSSFWorkbook();
         }
-
         Excel excelAnnotation = clazz.getAnnotation(Excel.class);
-        // Clearing sheet specified by name
-        String sheetName = new StringBuilder().append(excelAnnotation.name()).append(excelAnnotation.sheet()).toString();
-        int sheetIndex = workbook.getSheetIndex(sheetName);
-        if (sheetIndex !=-1) {
-            workbook.removeSheetAt(sheetIndex);
+        if(excelAnnotation != null)
+        {
+            String sheetName = excelAnnotation.sheetName() + excelAnnotation.sheet();
+            clearSheet(workbook, sheetName);
+            createNewSheetAndFill(list, clazz, workbook, excelAnnotation, sheetName);
+
+            writeFileOut(file, workbook, fileInputStream);
         }
-        // Creating new one
+    }
+
+    private <T extends BaseExcel> void createNewSheetAndFill(List<T> list, Class<T> clazz, XSSFWorkbook workbook, Excel excelAnnotation, String sheetName)
+    {
         XSSFSheet sheet = workbook.createSheet(sheetName);
         createHeader(sheet, excelAnnotation.firstRow(), clazz);
         TreeMap<Integer, Field> fieldsMap = getFieldsMap(clazz);
-        for (T t : list) {
+        for (T t : list)
+        {
             XSSFRow row = sheet.createRow(sheet.getLastRowNum() + 1);
-            for (Integer integer : fieldsMap.keySet()) {
+            for (Integer integer : fieldsMap.keySet())
+            {
                 XSSFCell cell = row.createCell(integer);
                 setCellValue(cell, fieldsMap.get(integer), t);
             }
         }
+    }
 
-        if (fileInputStream!=null) {
+    private void clearSheet(XSSFWorkbook workbook, String sheetName)
+    {
+        int sheetIndex = workbook.getSheetIndex(sheetName);
+        if (sheetIndex != -1)
+        {
+            workbook.removeSheetAt(sheetIndex);
+        }
+    }
+
+    private void writeFileOut(File file, XSSFWorkbook workbook, FileInputStream fileInputStream) throws IOException
+    {
+        if (fileInputStream != null)
+        {
             fileInputStream.close();
         }
-
-        FileOutputStream outFile =new FileOutputStream(file);
+        FileOutputStream outFile = new FileOutputStream(file);
         workbook.write(outFile);
         outFile.close();
     }
@@ -97,17 +115,6 @@ public class ExcelWriter
             headerMap.put(annotation.col(), annotation.columnName());
         }
         return headerMap;
-    }
-
-    private void clearSheet(XSSFWorkbook wb, int sheetNum)
-    {
-        XSSFSheet sheet = wb.getSheetAt(sheetNum);
-        Iterator<Row> rowIte = sheet.iterator();
-        while (rowIte.hasNext())
-        {
-            rowIte.next();
-            rowIte.remove();
-        }
     }
 
     private <T extends BaseExcel> void setCellValue(XSSFCell cell, Field field, T t)

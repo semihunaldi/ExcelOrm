@@ -1,5 +1,7 @@
 package com.semihunaldi.excelorm.annotations;
 
+import com.semihunaldi.excelorm.ExcelORMConstants;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,5 +17,5 @@ public @interface Excel {
 
     int firstCol() default 0;
 
-    String name() default "Sheet";
+    String sheetName() default ExcelORMConstants.DEFAULT_SHEET_NAME;
 }

@@ -12,9 +12,9 @@ public abstract class BaseTest
         return new File(classLoader.getResource(fileName).getFile());
     }
 
-    File getTestFile(String newfileName)
+    File getTestFile(String newFileName)
     {
         File testFile = getTestFile();
-        return new File(testFile.getParent(),newfileName);
+        return new File(testFile.getParent(),newFileName);
     }
 }

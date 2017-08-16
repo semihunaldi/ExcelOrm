@@ -49,7 +49,7 @@ public class ExcelReader
             int sheet = excelAnnotation.sheet();
             int firstRow = excelAnnotation.firstRow();
             int firstCol = excelAnnotation.firstCol();
-            String sheetName = new StringBuilder().append(excelAnnotation.name()).append(excelAnnotation.sheet()).toString();
+            String sheetName = excelAnnotation.sheetName() + sheet;
             XSSFSheet xssfSheet = xssfWorkbook.getSheet(sheetName);
             for (int rows = firstRow; rows < xssfSheet.getPhysicalNumberOfRows(); rows++)
             {
