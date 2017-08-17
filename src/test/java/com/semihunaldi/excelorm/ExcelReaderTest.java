@@ -1,6 +1,7 @@
 package com.semihunaldi.excelorm;
 
 
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,6 +27,16 @@ public class ExcelReaderTest extends BaseTest
         File file = getTestFile("TaskExcel.xlsx");
         InputStream inputStream = new FileInputStream(file);
         List<Task> taskList = excelReader.read(inputStream,Task.class);
+        Assert.assertEquals(10,taskList.size());
+    }
+
+    @Test
+    public void testWorkbook() throws Exception
+    {
+        ExcelReader excelReader = new ExcelReader();
+        File file = getTestFile("TaskExcel.xlsx");
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
+        List<Task> taskList = excelReader.read(xssfWorkbook,Task.class);
         Assert.assertEquals(10,taskList.size());
     }
 

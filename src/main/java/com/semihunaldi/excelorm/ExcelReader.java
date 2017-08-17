@@ -26,6 +26,15 @@ import java.util.List;
 
 public class ExcelReader
 {
+    public <T extends BaseExcel> List<T> read(XSSFWorkbook xssfWorkbook, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException, IOException
+    {
+        Validator.validate(xssfWorkbook);
+        List<T> tList = new LinkedList<>();
+        read(clazz, tList, xssfWorkbook);
+        xssfWorkbook.getPackage().revert();
+        return tList;
+    }
+
     public <T extends BaseExcel> List<T> read(InputStream inputStream, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException, IOException
     {
         List<T> tList = new LinkedList<>();
