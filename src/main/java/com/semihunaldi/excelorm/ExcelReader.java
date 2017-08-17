@@ -30,6 +30,7 @@ public class ExcelReader
     {
         List<T> tList = new LinkedList<>();
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(inputStream);
+        inputStream.close();
         read(clazz, tList, xssfWorkbook);
         xssfWorkbook.getPackage().revert();
         return tList;
