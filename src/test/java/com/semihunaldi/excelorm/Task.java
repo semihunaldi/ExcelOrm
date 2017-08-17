@@ -2,14 +2,10 @@ package com.semihunaldi.excelorm;
 
 import com.semihunaldi.excelorm.annotations.Excel;
 import com.semihunaldi.excelorm.annotations.ExcelColumn;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = true)
 @Excel(firstRow = 1, firstCol = 0, sheetName = "Tasks")
-@Data
 public class Task extends BaseExcel
 {
     @ExcelColumn(col = 0 , columnName = "Name")
@@ -29,4 +25,76 @@ public class Task extends BaseExcel
 
     @ExcelColumn(col = 5, columnName = "Date", dateFormat = "dd/MM/yyyy HH:mm")
     private Date date;
+
+    public String getFirstName()
+    {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName)
+    {
+        this.firstName = firstName;
+    }
+
+    public String getLastName()
+    {
+        return lastName;
+    }
+
+    public void setLastName(String lastName)
+    {
+        this.lastName = lastName;
+    }
+
+    public Integer getAge()
+    {
+        return age;
+    }
+
+    public void setAge(Integer age)
+    {
+        this.age = age;
+    }
+
+    public Double getAmount()
+    {
+        return amount;
+    }
+
+    public void setAmount(Double amount)
+    {
+        this.amount = amount;
+    }
+
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
+
+    public Date getDate()
+    {
+        return date;
+    }
+
+    public void setDate(Date date)
+    {
+        this.date = date;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return super.hashCode();
+    }
 }
