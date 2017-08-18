@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -179,30 +180,26 @@ public class ExcelReader
 
     private Date tryToGetDateCellValue(XSSFCell cell, Field field)
     {
-        try
+        if(cell.getCellTypeEnum() == CellType.STRING)
         {
-            ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
-            if(annotation != null && StringUtils.isNotBlank(annotation.dateFormat()))
+            try
             {
-                cell.setCellType(CellType.STRING);
-                String stringCellValue = cell.getStringCellValue();
-                DateTimeFormatter dtf = DateTimeFormat.forPattern(annotation.dateFormat());
-                DateTime dateTime = dtf.parseDateTime(stringCellValue);
-                return dateTime.toDate();
+                ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
+                if(annotation != null && StringUtils.isNotBlank(annotation.dateFormat()))
+                {
+                    cell.setCellType(CellType.STRING);
+                    String stringCellValue = cell.getStringCellValue();
+                    DateTimeFormatter dtf = DateTimeFormat.forPattern(annotation.dateFormat());
+                    DateTime dateTime = dtf.parseDateTime(stringCellValue);
+                    return dateTime.toDate();
+                }
             }
-            else
+            catch (Exception e)
             {
-                try
-                {
-                    return cell.getDateCellValue();
-                }
-                catch (Exception e)
-                {
-                    return null;
-                }
+                return null;
             }
         }
-        catch (Exception e1)
+        else if(cell.getCellTypeEnum() == CellType.NUMERIC && DateUtil.isCellDateFormatted(cell))
         {
             try
             {
@@ -213,6 +210,7 @@ public class ExcelReader
                 return null;
             }
         }
+        return null;
     }
 
     private String getNumericTypesAsString(XSSFCell cell)

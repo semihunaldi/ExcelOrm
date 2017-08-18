@@ -57,4 +57,12 @@ public class ExcelReaderTest extends BaseTest
         List<TaskExcelAtMiddle> taskList = excelReader.read(getTestFile("TaskExcel.xlsx"), TaskExcelAtMiddle.class);
         Assert.assertEquals(10,taskList.size());
     }
+
+    @Test
+    public void testExcelDate() throws Exception
+    {
+        ExcelReader excelReader = new ExcelReader();
+        List<DateTask> taskList = excelReader.read(getTestFile("TaskExcel.xlsx"), DateTask.class);
+        Assert.assertEquals(10,taskList.size());
+    }
 }
