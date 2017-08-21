@@ -179,6 +179,15 @@ public class ExcelWriter
                     }
                 }
             }
+            else if(type.isEnum())
+            {
+                Enum anEnum = (Enum) field.get(t);
+                if(anEnum != null)
+                {
+                    cell.setCellType(CellType.STRING);
+                    cell.setCellValue(anEnum.name());
+                }
+            }
             else
             {
                 cell.setCellType(CellType.STRING);

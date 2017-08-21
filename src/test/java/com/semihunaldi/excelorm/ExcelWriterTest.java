@@ -52,4 +52,18 @@ public class ExcelWriterTest extends BaseTest
         ExcelWriter excelWriter = new ExcelWriter();
         excelWriter.write(getTestFile(),taskList,Task.class);
     }
+
+    @Test
+    public void testExcelEnum() throws Exception
+    {
+        ExcelReader excelReader = new ExcelReader();
+        List<EnumTaskTest> taskList = excelReader.read(getTestFile(), EnumTaskTest.class);
+        for (EnumTaskTest enumTaskTest : taskList) {
+            enumTaskTest.setStatus(Status.FINISHED);
+        }
+        taskList.get(0).setStatus(null);
+        ExcelWriter excelWriter = new ExcelWriter();
+        excelWriter.write(getTestFile(),taskList,EnumTaskTest.class);
+    }
+
 }

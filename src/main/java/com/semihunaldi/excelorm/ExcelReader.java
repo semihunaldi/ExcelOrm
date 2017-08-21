@@ -166,6 +166,16 @@ public class ExcelReader
             {
                 return tryToGetDateCellValue(cell,field);
             }
+            else if(type.isEnum())
+            {
+                cell.setCellType(CellType.STRING);
+                String stringCellValue = cell.getStringCellValue();
+                if(StringUtils.isNotBlank(stringCellValue))
+                {
+                    return getEnumValue(field,stringCellValue);
+                }
+                return null;
+            }
             else
             {
                 cell.setCellType(CellType.STRING);
@@ -176,6 +186,22 @@ public class ExcelReader
         {
             return null;
         }
+    }
+
+    private Enum getEnumValue(Field field, String value)
+    {
+        if(field.getType().isEnum())
+        {
+            for (Object enumObject : field.getType().getEnumConstants())
+            {
+                Enum  anEnum = (Enum) enumObject;
+                if(anEnum.name().equals(value))
+                {
+                    return anEnum;
+                }
+            }
+        }
+        return null;
     }
 
     private Date tryToGetDateCellValue(XSSFCell cell, Field field)

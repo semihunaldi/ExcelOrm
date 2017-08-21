@@ -3,7 +3,7 @@ Experimental Excel ORM library
 #### Limitations
 * Every sheet maps to only _ONE_ POJO.
 * Sadly, every time you need to update any data, whole sheet of the excel will be rewritten. This will be a major problem if data is huge. 
-* Only String, Integer, Double, BigInteger, Long, Boolean and Date classes are supported.
+* Only String, Integer, Double, BigInteger, Long, Boolean, Date and Enum classes are supported.
 
 
 ***
@@ -75,6 +75,9 @@ public class Task extends BaseExcel
     
     @ExcelColumn(col = 5, columnName = "Date", dateFormat = "dd/MM/yyyy HH:mm")
     private Date date;
+    
+    @ExcelColumn(col = 6 , columnName = "Status")
+    private Status status;
 }
 ```
 

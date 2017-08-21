@@ -65,4 +65,12 @@ public class ExcelReaderTest extends BaseTest
         List<DateTask> taskList = excelReader.read(getTestFile("TaskExcel.xlsx"), DateTask.class);
         Assert.assertEquals(10,taskList.size());
     }
+
+    @Test
+    public void testExcelEnum() throws Exception
+    {
+        ExcelReader excelReader = new ExcelReader();
+        List<EnumTaskTest> taskList = excelReader.read(getTestFile("TaskExcel.xlsx"), EnumTaskTest.class);
+        Assert.assertEquals(10,taskList.size());
+    }
 }
