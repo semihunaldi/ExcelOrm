@@ -1,5 +1,10 @@
 package com.semihunaldi.excelorm;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -66,4 +71,17 @@ public class ExcelWriterTest extends BaseTest
         excelWriter.write(getTestFile(),taskList,EnumTaskTest.class);
     }
 
+
+    @Test
+    public void testWriteOnWorkbook() throws Exception
+    {
+        ExcelReader excelReader = new ExcelReader();
+        List<Task> taskList = excelReader.read(getTestFile(), Task.class);
+        ExcelWriter excelWriter = new ExcelWriter();
+        XSSFWorkbook workbook = excelWriter.writeOnWorkbook(taskList, Task.class);
+        XSSFSheet tasks = workbook.getSheet("Tasks");
+        XSSFRow row = tasks.getRow(1);
+        XSSFCell cell = row.getCell(0);
+        Assert.assertEquals("test name1",cell.getStringCellValue());
+    }
 }

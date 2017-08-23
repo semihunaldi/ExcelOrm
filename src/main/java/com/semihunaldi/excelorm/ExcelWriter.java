@@ -43,6 +43,28 @@ public class ExcelWriter
             createNewSheetAndFill(list, clazz, workbook, excelAnnotation, sheetName);
             writeFileOut(file, workbook, fileInputStream);
         }
+        else
+        {
+            throw new IllegalExcelArgumentException(clazz.getName() + " Class does not have @Excel annotation");
+        }
+    }
+
+    public <T extends BaseExcel> XSSFWorkbook writeOnWorkbook(List<T> list, Class<T> clazz) throws IllegalExcelArgumentException
+    {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        Excel excelAnnotation = clazz.getAnnotation(Excel.class);
+        if(excelAnnotation != null)
+        {
+            Validator.validate(excelAnnotation);
+            String sheetName = excelAnnotation.sheetName();
+            clearSheet(workbook, sheetName);
+            createNewSheetAndFill(list, clazz, workbook, excelAnnotation, sheetName);
+        }
+        else
+        {
+            throw new IllegalExcelArgumentException(clazz.getName() + " Class does not have @Excel annotation");
+        }
+        return workbook;
     }
 
     private <T extends BaseExcel> void createNewSheetAndFill(List<T> list, Class<T> clazz, XSSFWorkbook workbook, Excel excelAnnotation, String sheetName)
