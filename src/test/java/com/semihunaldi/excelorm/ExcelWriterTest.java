@@ -7,6 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExcelWriterTest extends BaseTest
@@ -83,5 +84,24 @@ public class ExcelWriterTest extends BaseTest
         XSSFRow row = tasks.getRow(1);
         XSSFCell cell = row.getCell(0);
         Assert.assertEquals("test name1",cell.getStringCellValue());
+    }
+
+    @Test
+    public void testWriteNullDate() throws Exception
+    {
+        List<Task> taskList = new ArrayList<>();
+        Task task = new Task();
+        task.setFirstName("qqq");
+        task.setLastName("qqq");
+        task.setAge(1);
+        task.setDate(null);
+        task.setDescription("asd");
+        task.setAmount(22d);
+        taskList.add(task);
+        ExcelWriter excelWriter = new ExcelWriter();
+        excelWriter.write(getTestFile(),taskList,Task.class);
+        ExcelReader excelReader = new ExcelReader();
+        List<Task> returnedTaskList = excelReader.read(getTestFile(), Task.class);
+        Assert.assertEquals(null,returnedTaskList.get(0).getDate());
     }
 }

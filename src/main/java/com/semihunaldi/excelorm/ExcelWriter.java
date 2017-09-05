@@ -186,7 +186,7 @@ public class ExcelWriter
             {
                 Date value = (Date) field.get(t);
                 ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
-                if (annotation != null && StringUtils.isNotBlank(annotation.dateFormat()))
+                if (value != null && annotation != null && StringUtils.isNotBlank(annotation.dateFormat()))
                 {
                     try
                     {
