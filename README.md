@@ -17,6 +17,7 @@ Experimental Excel ORM library
     <th>Amount</th>
     <th>Description</th>
     <th>Date</th>
+    <th>Status</th>
   </tr>
   <tr>
     <td>Name1</td>
@@ -25,6 +26,7 @@ Experimental Excel ORM library
     <td>101.1</td>
     <td>description1</td>
     <td>16/09/2017 19:30</td>
+    <td>FINISHED</td>
   </tr>
   <tr>
     <td>Name2</td>
@@ -33,6 +35,7 @@ Experimental Excel ORM library
     <td>102.2</td>
     <td>description2</td>
     <td>16/09/2017 19:30</td>
+    <td>ACTIVE</td>
   </tr>
   <tr>
     <td>Name3</td>
@@ -41,6 +44,7 @@ Experimental Excel ORM library
     <td>103.3</td>
     <td>description3</td>
     <td>16/09/2017 19:30</td>
+    <td>ACTIVE</td>
   </tr>
   <tr>
     <td>Name4</td>
@@ -49,6 +53,7 @@ Experimental Excel ORM library
     <td>104.4</td>
     <td>description4</td>
     <td>16/09/2017 19:30</td>
+    <td>FINISHED</td>
   </tr>
 </table>
 
