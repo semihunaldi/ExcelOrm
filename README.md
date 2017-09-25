@@ -86,11 +86,13 @@ public class Test
 {
     public static void main(String[] args)
     {
+        File file = new File("/some/path/Excel.xlsx");
+        //reading
         ExcelReader excelReader = new ExcelReader();
-        List<Task> taskList = excelReader.read(new File("/some/path/Excel.xlsx"), Task.class);
-        //
+        List<Task> taskList = excelReader.read(file, Task.class);
+        //writing
         ExcelWriter excelWriter = new ExcelWriter();
-        excelWriter.write(new File("/some/path/Excel_new.xlsx"),taskList,Task.class);
+        excelWriter.write(file,taskList,Task.class);
     }
 }
 ```
