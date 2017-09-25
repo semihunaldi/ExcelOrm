@@ -63,25 +63,25 @@ Experimental Excel ORM library
 @Data
 public class Task extends BaseExcel
 {
-    @ExcelColumn(col = 0 , columnName = "Name")
+    @ExcelColumn(col = 0, columnName = "Name")
     private String firstName;
 
-    @ExcelColumn(col = 1 , columnName = "Last Name")
+    @ExcelColumn(col = 1, columnName = "Last Name")
     private String lastName;
 
-    @ExcelColumn(col = 2 , columnName = "Age")
+    @ExcelColumn(col = 2, columnName = "Age")
     private Integer age;
 
-    @ExcelColumn(col = 3 , columnName = "Amount")
+    @ExcelColumn(col = 3, columnName = "Amount")
     private Double amount;
 
-    @ExcelColumn(col = 4 , columnName = "Description")
+    @ExcelColumn(col = 4, columnName = "Description")
     private String description;
     
     @ExcelColumn(col = 5, columnName = "Date", dateFormat = "dd/MM/yyyy HH:mm")
     private Date date;
     
-    @ExcelColumn(col = 6 , columnName = "Status")
+    @ExcelColumn(col = 6, columnName = "Status")
     private Status status;
 }
 ```
