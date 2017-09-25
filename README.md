@@ -92,6 +92,7 @@ public class Test
         List<Task> taskList = excelReader.read(file, Task.class);
         //writing
         ExcelWriter excelWriter = new ExcelWriter();
+        taskList.remove(2);
         excelWriter.write(file,taskList,Task.class);
     }
 }
