@@ -63,6 +63,7 @@ public class ExcelReader
             Validator.validate(excelAnnotation);
             int firstRow = excelAnnotation.firstRow();
             int firstCol = excelAnnotation.firstCol();
+            int dataColumnCount = dataColumnCount(clazz);
             String sheetName = excelAnnotation.sheetName();
             XSSFSheet xssfSheet = xssfWorkbook.getSheet(sheetName);
             for (int rows = firstRow; rows < firstRow + xssfSheet.getPhysicalNumberOfRows(); rows++)
@@ -72,7 +73,7 @@ public class ExcelReader
                 XSSFRow row = xssfSheet.getRow(rows);
                 if(row != null)
                 {
-                    for (int cells = firstCol; cells < firstCol + row.getPhysicalNumberOfCells(); cells++)
+                    for (int cells = firstCol; cells < firstCol + dataColumnCount; cells++)
                     {
                         XSSFCell cell = row.getCell(cells);
                         if(cell != null)
@@ -88,6 +89,11 @@ public class ExcelReader
                 }
             }
         }
+    }
+
+    private <T extends BaseExcel> int dataColumnCount(Class<T> clazz)
+    {
+        return FieldUtils.getFieldsListWithAnnotation(clazz, ExcelColumn.class).size();
     }
 
     private <T extends BaseExcel> void setFieldValue(T t, XSSFCell cell, Field field)
@@ -143,7 +149,12 @@ public class ExcelReader
             }
             else if (type == Integer.class)
             {
-                return Integer.valueOf(getNumericTypesAsString(cell));
+                String val = getNumericTypesAsString(cell);
+                try {
+                    return Integer.valueOf(val);
+                } catch (NumberFormatException e) {
+                    return Integer.valueOf(val.substring(0,val.indexOf(".")));
+                }
             }
             else if (type == Double.class)
             {

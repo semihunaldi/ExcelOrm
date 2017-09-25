@@ -12,6 +12,11 @@ import java.util.List;
 
 public class ExcelWriterTest extends BaseTest
 {
+    public ExcelWriterTest()
+    {
+        copyFile();
+    }
+
     @Test
     public void testExisting() throws Exception
     {
@@ -22,6 +27,11 @@ public class ExcelWriterTest extends BaseTest
         taskList.get(5).setAmount(9.99);
         ExcelWriter excelWriter = new ExcelWriter();
         excelWriter.write(getTestFile(),taskList,Task.class);
+
+        List<Task> taskListReturned = excelReader.read(getTestFile(), Task.class);
+        Assert.assertEquals(999,taskListReturned.get(2).getAge().intValue());
+        Assert.assertEquals(9.99,taskListReturned.get(5).getAmount(),0);
+        revertCopy();
     }
 
     @Test
@@ -35,16 +45,26 @@ public class ExcelWriterTest extends BaseTest
         ExcelWriter excelWriter = new ExcelWriter();
         excelWriter.write(getTestFile(),taskList,Task.class);
         excelWriter.write(getTestFile(),personList,Person.class);
+
+        List<Task> taskListReturned = excelReader.read(getTestFile(), Task.class);
+        List<Task> personListReturned = excelReader.read(getTestFile(), Task.class);
+        Assert.assertEquals(taskListReturned.size(),taskList.size());
+        Assert.assertEquals(personListReturned.size(),personListReturned.size());
+        revertCopy();
     }
 
     @Test
     public void testExcelDataWithMiddleOfTheExcel() throws Exception
     {
         ExcelReader excelReader = new ExcelReader();
-        List<TaskExcelAtMiddle> taskList = excelReader.read(getTestFile("TaskExcel.xlsx"), TaskExcelAtMiddle.class);
+        List<TaskExcelAtMiddle> taskList = excelReader.read(getTestFile(), TaskExcelAtMiddle.class);
         taskList.remove(7);
         ExcelWriter excelWriter = new ExcelWriter();
         excelWriter.write(getTestFile(),taskList,TaskExcelAtMiddle.class);
+
+        List<TaskExcelAtMiddle> taskListReturned = excelReader.read(getTestFile(), TaskExcelAtMiddle.class);
+        Assert.assertEquals(taskList.size(),taskListReturned.size());
+        revertCopy();
     }
 
     @Test
@@ -57,6 +77,11 @@ public class ExcelWriterTest extends BaseTest
         taskList.get(5).setAmount(88.9);
         ExcelWriter excelWriter = new ExcelWriter();
         excelWriter.write(getTestFile(),taskList,Task.class);
+
+        List<Task> taskListReturned = excelReader.read(getTestFile(), Task.class);
+        Assert.assertEquals(888,taskListReturned.get(2).getAge().intValue());
+        Assert.assertEquals(88.9,taskListReturned.get(5).getAmount(),0);
+        revertCopy();
     }
 
     @Test
@@ -70,6 +95,11 @@ public class ExcelWriterTest extends BaseTest
         taskList.get(0).setStatus(null);
         ExcelWriter excelWriter = new ExcelWriter();
         excelWriter.write(getTestFile(),taskList,EnumTaskTest.class);
+
+        List<EnumTaskTest> taskListReturned = excelReader.read(getTestFile(), EnumTaskTest.class);
+        Assert.assertEquals(null,taskListReturned.get(0).getStatus());
+        Assert.assertEquals(Status.FINISHED,taskListReturned.get(1).getStatus());
+        revertCopy();
     }
 
 
@@ -84,6 +114,7 @@ public class ExcelWriterTest extends BaseTest
         XSSFRow row = tasks.getRow(1);
         XSSFCell cell = row.getCell(0);
         Assert.assertEquals("test name1",cell.getStringCellValue());
+        revertCopy();
     }
 
     @Test
@@ -100,8 +131,10 @@ public class ExcelWriterTest extends BaseTest
         taskList.add(task);
         ExcelWriter excelWriter = new ExcelWriter();
         excelWriter.write(getTestFile(),taskList,Task.class);
+
         ExcelReader excelReader = new ExcelReader();
         List<Task> returnedTaskList = excelReader.read(getTestFile(), Task.class);
         Assert.assertEquals(null,returnedTaskList.get(0).getDate());
+        revertCopy();
     }
 }
