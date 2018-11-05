@@ -1,5 +1,5 @@
 package com.semihunaldi.excelorm;
 
 public enum Status {
-    ACTIVE,FINISHED;
+	ACTIVE, FINISHED;
 }

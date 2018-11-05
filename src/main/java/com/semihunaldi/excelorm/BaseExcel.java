@@ -1,47 +1,42 @@
 package com.semihunaldi.excelorm;
 
-
 import java.io.Serializable;
 
-public class BaseExcel implements Serializable
-{
-    private int _myRow;
-    private int _myOldRow;
+public class BaseExcel implements Serializable {
 
-    public int get_myRow()
-    {
-        return _myRow;
-    }
+	private int _myRow;
+	private int _myOldRow;
 
-    public void set_myRow(int _myRow)
-    {
-        this._myRow = _myRow;
-    }
+	public int get_myRow() {
+		return _myRow;
+	}
 
-    public int get_myOldRow()
-    {
-        return _myOldRow;
-    }
+	public void set_myRow(int _myRow) {
+		this._myRow = _myRow;
+	}
 
-    public void set_myOldRow(int _myOldRow)
-    {
-        this._myOldRow = _myOldRow;
-    }
+	public int get_myOldRow() {
+		return _myOldRow;
+	}
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	public void set_myOldRow(int _myOldRow) {
+		this._myOldRow = _myOldRow;
+	}
 
-        BaseExcel baseExcel = (BaseExcel) o;
+	@Override
+	public boolean equals(Object o) {
+		if(this == o)
+			return true;
+		if(o == null || getClass() != o.getClass())
+			return false;
 
-        return _myRow == baseExcel._myRow;
-    }
+		BaseExcel baseExcel = (BaseExcel) o;
 
-    @Override
-    public int hashCode()
-    {
-        return _myRow;
-    }
+		return _myRow == baseExcel._myRow;
+	}
+
+	@Override
+	public int hashCode() {
+		return _myRow;
+	}
 }

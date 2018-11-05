@@ -25,235 +25,189 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ExcelReader
-{
-    public <T extends BaseExcel> List<T> read(XSSFWorkbook xssfWorkbook, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException, IOException
-    {
-        Validator.validate(xssfWorkbook);
-        List<T> tList = new LinkedList<>();
-        read(clazz, tList, xssfWorkbook);
-        xssfWorkbook.getPackage().revert();
-        return tList;
-    }
+public class ExcelReader {
 
-    public <T extends BaseExcel> List<T> read(InputStream inputStream, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException, IOException
-    {
-        List<T> tList = new LinkedList<>();
-        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(inputStream);
-        inputStream.close();
-        read(clazz, tList, xssfWorkbook);
-        xssfWorkbook.getPackage().revert();
-        return tList;
-    }
+	public <T extends BaseExcel> List<T> read(
+			XSSFWorkbook xssfWorkbook,
+			Class<T> clazz
+	) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException, IOException {
+		Validator.validate(xssfWorkbook);
+		List<T> tList = new LinkedList<>();
+		read(clazz, tList, xssfWorkbook);
+		xssfWorkbook.getPackage().revert();
+		return tList;
+	}
 
-    public <T extends BaseExcel> List<T> read(File file, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException, IOException, InvalidFormatException
-    {
-        List<T> tList = new LinkedList<>();
-        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
-        read(clazz, tList, xssfWorkbook);
-        xssfWorkbook.getPackage().revert();
-        return tList;
-    }
+	public <T extends BaseExcel> List<T> read(
+			InputStream inputStream,
+			Class<T> clazz
+	) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException, IOException {
+		List<T> tList = new LinkedList<>();
+		XSSFWorkbook xssfWorkbook = new XSSFWorkbook(inputStream);
+		inputStream.close();
+		read(clazz, tList, xssfWorkbook);
+		xssfWorkbook.getPackage().revert();
+		return tList;
+	}
 
-    private <T extends BaseExcel> void read(Class<T> clazz, List<T> tList, XSSFWorkbook xssfWorkbook) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException
-    {
-        Excel excelAnnotation = clazz.getAnnotation(Excel.class);
-        if (excelAnnotation != null)
-        {
-            Validator.validate(excelAnnotation);
-            int firstRow = excelAnnotation.firstRow();
-            int firstCol = excelAnnotation.firstCol();
-            int dataColumnCount = dataColumnCount(clazz);
-            String sheetName = excelAnnotation.sheetName();
-            XSSFSheet xssfSheet = xssfWorkbook.getSheet(sheetName);
-            for (int rows = firstRow; rows < firstRow + xssfSheet.getPhysicalNumberOfRows(); rows++)
-            {
-                T t = clazz.newInstance();
-                updateRowField(t,clazz,rows);
-                XSSFRow row = xssfSheet.getRow(rows);
-                if(row != null)
-                {
-                    for (int cells = firstCol; cells < firstCol + dataColumnCount; cells++)
-                    {
-                        XSSFCell cell = row.getCell(cells);
-                        if(cell != null)
-                        {
-                            Field field = findFieldByColNumber(clazz, cells,firstCol);
-                            if (field != null)
-                            {
-                                setFieldValue(t, cell, field);
-                            }
-                        }
-                    }
-                    tList.add(t);
-                }
-            }
-        }
-    }
+	public <T extends BaseExcel> List<T> read(
+			File file,
+			Class<T> clazz
+	) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException, IOException, InvalidFormatException {
+		List<T> tList = new LinkedList<>();
+		XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
+		read(clazz, tList, xssfWorkbook);
+		xssfWorkbook.getPackage().revert();
+		return tList;
+	}
 
-    private <T extends BaseExcel> int dataColumnCount(Class<T> clazz)
-    {
-        return FieldUtils.getFieldsListWithAnnotation(clazz, ExcelColumn.class).size();
-    }
+	private <T extends BaseExcel> void read(
+			Class<T> clazz,
+			List<T> tList,
+			XSSFWorkbook xssfWorkbook
+	) throws InstantiationException, IllegalAccessException, IllegalExcelArgumentException {
+		Excel excelAnnotation = clazz.getAnnotation(Excel.class);
+		if(excelAnnotation != null){
+			Validator.validate(excelAnnotation);
+			int firstRow = excelAnnotation.firstRow();
+			int firstCol = excelAnnotation.firstCol();
+			int dataColumnCount = dataColumnCount(clazz);
+			String sheetName = excelAnnotation.sheetName();
+			XSSFSheet xssfSheet = xssfWorkbook.getSheet(sheetName);
+			for(int rows = firstRow; rows < firstRow + xssfSheet.getPhysicalNumberOfRows(); rows++){
+				T t = clazz.newInstance();
+				updateRowField(t, clazz, rows);
+				XSSFRow row = xssfSheet.getRow(rows);
+				if(row != null){
+					for(int cells = firstCol; cells < firstCol + dataColumnCount; cells++){
+						XSSFCell cell = row.getCell(cells);
+						if(cell != null){
+							Field field = findFieldByColNumber(clazz, cells, firstCol);
+							if(field != null){
+								setFieldValue(t, cell, field);
+							}
+						}
+					}
+					tList.add(t);
+				}
+			}
+		}
+	}
 
-    private <T extends BaseExcel> void setFieldValue(T t, XSSFCell cell, Field field)
-    {
-        Object o = getCellValue(cell, field);
-        setFieldValue(t, field, o);
-    }
+	private <T extends BaseExcel> int dataColumnCount(Class<T> clazz) {
+		return FieldUtils.getFieldsListWithAnnotation(clazz, ExcelColumn.class).size();
+	}
 
-    private <T extends BaseExcel> void setFieldValue(T t, Field field, Object o)
-    {
-        try
-        {
-            boolean accessible = field.isAccessible();
-            field.setAccessible(true);
-            field.set(t, o);
-            field.setAccessible(accessible);
-        }
-        catch (IllegalAccessException e)
-        {
-            //swallow
-        }
-    }
+	private <T extends BaseExcel> void setFieldValue(T t, XSSFCell cell, Field field) {
+		Object o = getCellValue(cell, field);
+		setFieldValue(t, field, o);
+	}
 
-    private Field findFieldByColNumber(Class clazz, int col, int firstCol)
-    {
-        List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(clazz, ExcelColumn.class);
-        for (Field field : fieldsListWithAnnotation)
-        {
-            ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
-            if (firstCol + annotation.col() == col)
-            {
-                return field;
-            }
-        }
-        return null;
-    }
+	private <T extends BaseExcel> void setFieldValue(T t, Field field, Object o) {
+		try{
+			boolean accessible = field.isAccessible();
+			field.setAccessible(true);
+			field.set(t, o);
+			field.setAccessible(accessible);
+		} catch(IllegalAccessException e){
+			//swallow
+		}
+	}
 
-    private <T extends BaseExcel> void updateRowField(T t, Class clazz, int row)
-    {
-        Field field = FieldUtils.getField(clazz,"_myRow",true);
-        setFieldValue(t,field,row);
-    }
+	private Field findFieldByColNumber(Class clazz, int col, int firstCol) {
+		List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(clazz, ExcelColumn.class);
+		for(Field field : fieldsListWithAnnotation){
+			ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
+			if(firstCol + annotation.col() == col){
+				return field;
+			}
+		}
+		return null;
+	}
 
-    private Object getCellValue(XSSFCell cell, Field field)
-    {
-        Class<?> type = field.getType();
-        try
-        {
-            if (type == String.class)
-            {
-                cell.setCellType(CellType.STRING);
-                return cell.getStringCellValue();
-            }
-            else if (type == Integer.class)
-            {
-                String val = getNumericTypesAsString(cell);
-                try {
-                    return Integer.valueOf(val);
-                } catch (NumberFormatException e) {
-                    return Integer.valueOf(val.substring(0,val.indexOf(".")));
-                }
-            }
-            else if (type == Double.class)
-            {
-                return Double.valueOf(getNumericTypesAsString(cell));
-            }
-            else if (type == BigInteger.class)
-            {
-                return new BigInteger(getNumericTypesAsString(cell));
-            }
-            else if (type == Long.class)
-            {
-                return Long.valueOf(getNumericTypesAsString(cell));
-            }
-            else if (type == Boolean.class)
-            {
-                cell.setCellType(CellType.BOOLEAN);
-                return cell.getBooleanCellValue();
-            }
-            else if(type == Date.class)
-            {
-                return tryToGetDateCellValue(cell,field);
-            }
-            else if(type.isEnum())
-            {
-                cell.setCellType(CellType.STRING);
-                String stringCellValue = cell.getStringCellValue();
-                if(StringUtils.isNotBlank(stringCellValue))
-                {
-                    return getEnumValue(field,stringCellValue);
-                }
-                return null;
-            }
-            else
-            {
-                cell.setCellType(CellType.STRING);
-                return cell.getStringCellValue();
-            }
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
+	private <T extends BaseExcel> void updateRowField(T t, Class clazz, int row) {
+		Field field = FieldUtils.getField(clazz, "_myRow", true);
+		setFieldValue(t, field, row);
+	}
 
-    private Enum getEnumValue(Field field, String value)
-    {
-        if(field.getType().isEnum())
-        {
-            for (Object enumObject : field.getType().getEnumConstants())
-            {
-                Enum  anEnum = (Enum) enumObject;
-                if(anEnum.name().equals(value))
-                {
-                    return anEnum;
-                }
-            }
-        }
-        return null;
-    }
+	private Object getCellValue(XSSFCell cell, Field field) {
+		Class<?> type = field.getType();
+		try{
+			if(type == String.class){
+				cell.setCellType(CellType.STRING);
+				return cell.getStringCellValue();
+			} else if(type == Integer.class){
+				String val = getNumericTypesAsString(cell);
+				try{
+					return Integer.valueOf(val);
+				} catch(NumberFormatException e){
+					return Integer.valueOf(val.substring(0, val.indexOf(".")));
+				}
+			} else if(type == Double.class){
+				return Double.valueOf(getNumericTypesAsString(cell));
+			} else if(type == BigInteger.class){
+				return new BigInteger(getNumericTypesAsString(cell));
+			} else if(type == Long.class){
+				return Long.valueOf(getNumericTypesAsString(cell));
+			} else if(type == Boolean.class){
+				cell.setCellType(CellType.BOOLEAN);
+				return cell.getBooleanCellValue();
+			} else if(type == Date.class){
+				return tryToGetDateCellValue(cell, field);
+			} else if(type.isEnum()){
+				cell.setCellType(CellType.STRING);
+				String stringCellValue = cell.getStringCellValue();
+				if(StringUtils.isNotBlank(stringCellValue)){
+					return getEnumValue(field, stringCellValue);
+				}
+				return null;
+			} else{
+				cell.setCellType(CellType.STRING);
+				return cell.getStringCellValue();
+			}
+		} catch(Exception e){
+			return null;
+		}
+	}
 
-    private Date tryToGetDateCellValue(XSSFCell cell, Field field)
-    {
-        if(cell.getCellTypeEnum() == CellType.STRING)
-        {
-            try
-            {
-                ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
-                if(annotation != null && StringUtils.isNotBlank(annotation.dateFormat()))
-                {
-                    cell.setCellType(CellType.STRING);
-                    String stringCellValue = cell.getStringCellValue();
-                    DateTimeFormatter dtf = DateTimeFormat.forPattern(annotation.dateFormat());
-                    DateTime dateTime = dtf.parseDateTime(stringCellValue);
-                    return dateTime.toDate();
-                }
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-        else if(cell.getCellTypeEnum() == CellType.NUMERIC && DateUtil.isCellDateFormatted(cell))
-        {
-            try
-            {
-                return cell.getDateCellValue();
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-        return null;
-    }
+	private Enum getEnumValue(Field field, String value) {
+		if(field.getType().isEnum()){
+			for(Object enumObject : field.getType().getEnumConstants()){
+				Enum anEnum = (Enum) enumObject;
+				if(anEnum.name().equals(value)){
+					return anEnum;
+				}
+			}
+		}
+		return null;
+	}
 
-    private String getNumericTypesAsString(XSSFCell cell)
-    {
-        cell.setCellType(CellType.STRING);
-        return cell.getStringCellValue();
-    }
+	private Date tryToGetDateCellValue(XSSFCell cell, Field field) {
+		if(cell.getCellTypeEnum() == CellType.STRING){
+			try{
+				ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
+				if(annotation != null && StringUtils.isNotBlank(annotation.dateFormat())){
+					cell.setCellType(CellType.STRING);
+					String stringCellValue = cell.getStringCellValue();
+					DateTimeFormatter dtf = DateTimeFormat.forPattern(annotation.dateFormat());
+					DateTime dateTime = dtf.parseDateTime(stringCellValue);
+					return dateTime.toDate();
+				}
+			} catch(Exception e){
+				return null;
+			}
+		} else if(cell.getCellTypeEnum() == CellType.NUMERIC && DateUtil.isCellDateFormatted(cell)){
+			try{
+				return cell.getDateCellValue();
+			} catch(Exception e){
+				return null;
+			}
+		}
+		return null;
+	}
 
+	private String getNumericTypesAsString(XSSFCell cell) {
+		cell.setCellType(CellType.STRING);
+		return cell.getStringCellValue();
+	}
 }

@@ -6,95 +6,81 @@ import com.semihunaldi.excelorm.annotations.ExcelColumn;
 import java.util.Date;
 
 @Excel(firstRow = 1, firstCol = 0, sheetName = "Tasks")
-public class Task extends BaseExcel
-{
-    @ExcelColumn(col = 0 , columnName = "Name")
-    private String firstName;
+public class Task extends BaseExcel {
 
-    @ExcelColumn(col = 1 , columnName = "Last Name")
-    private String lastName;
+	@ExcelColumn(col = 0, columnName = "Name")
+	private String firstName;
 
-    @ExcelColumn(col = 2 , columnName = "Age")
-    private Integer age;
+	@ExcelColumn(col = 1, columnName = "Last Name")
+	private String lastName;
 
-    @ExcelColumn(col = 3 , columnName = "Amount")
-    private Double amount;
+	@ExcelColumn(col = 2, columnName = "Age")
+	private Integer age;
 
-    @ExcelColumn(col = 4 , columnName = "Description")
-    private String description;
+	@ExcelColumn(col = 3, columnName = "Amount")
+	private Double amount;
 
-    @ExcelColumn(col = 5, columnName = "Date", dateFormat = "dd/MM/yyyy HH:mm")
-    private Date date;
+	@ExcelColumn(col = 4, columnName = "Description")
+	private String description;
 
-    public String getFirstName()
-    {
-        return firstName;
-    }
+	@ExcelColumn(col = 5, columnName = "Date", dateFormat = "dd/MM/yyyy HH:mm")
+	private Date date;
 
-    public void setFirstName(String firstName)
-    {
-        this.firstName = firstName;
-    }
+	public String getFirstName() {
+		return firstName;
+	}
 
-    public String getLastName()
-    {
-        return lastName;
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    public void setLastName(String lastName)
-    {
-        this.lastName = lastName;
-    }
+	public String getLastName() {
+		return lastName;
+	}
 
-    public Integer getAge()
-    {
-        return age;
-    }
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
-    public void setAge(Integer age)
-    {
-        this.age = age;
-    }
+	public Integer getAge() {
+		return age;
+	}
 
-    public Double getAmount()
-    {
-        return amount;
-    }
+	public void setAge(Integer age) {
+		this.age = age;
+	}
 
-    public void setAmount(Double amount)
-    {
-        this.amount = amount;
-    }
+	public Double getAmount() {
+		return amount;
+	}
 
-    public String getDescription()
-    {
-        return description;
-    }
+	public void setAmount(Double amount) {
+		this.amount = amount;
+	}
 
-    public void setDescription(String description)
-    {
-        this.description = description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public Date getDate()
-    {
-        return date;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setDate(Date date)
-    {
-        this.date = date;
-    }
+	public Date getDate() {
+		return date;
+	}
 
-    @Override
-    public boolean equals(Object o)
-    {
-        return super.equals(o);
-    }
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
-    @Override
-    public int hashCode()
-    {
-        return super.hashCode();
-    }
+	@Override
+	public boolean equals(Object o) {
+		return super.equals(o);
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

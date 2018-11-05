@@ -7,9 +7,9 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface ExcelColumn
-{
-    int col();
-    String columnName();
-    String dateFormat() default "";
+public @interface ExcelColumn {
+
+	int col();
+	String columnName();
+	String dateFormat() default "";
 }

@@ -4,43 +4,37 @@ import com.semihunaldi.excelorm.annotations.Excel;
 import com.semihunaldi.excelorm.annotations.ExcelColumn;
 
 @Excel(firstRow = 1, firstCol = 0, sheetName = "People")
-public class Person extends BaseExcel
-{
-    @ExcelColumn(col = 0 , columnName = "Name")
-    private String name;
+public class Person extends BaseExcel {
 
-    @ExcelColumn(col = 1 , columnName = "Surname")
-    private String surName;
+	@ExcelColumn(col = 0, columnName = "Name")
+	private String name;
 
-    public String getName()
-    {
-        return name;
-    }
+	@ExcelColumn(col = 1, columnName = "Surname")
+	private String surName;
 
-    public void setName(String name)
-    {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getSurName()
-    {
-        return surName;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setSurName(String surName)
-    {
-        this.surName = surName;
-    }
+	public String getSurName() {
+		return surName;
+	}
 
-    @Override
-    public boolean equals(Object o)
-    {
-        return super.equals(o);
-    }
+	public void setSurName(String surName) {
+		this.surName = surName;
+	}
 
-    @Override
-    public int hashCode()
-    {
-        return super.hashCode();
-    }
+	@Override
+	public boolean equals(Object o) {
+		return super.equals(o);
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }
