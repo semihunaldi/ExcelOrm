@@ -1,5 +1,12 @@
 Experimental Excel ORM library
 
+```xml
+<dependency>
+  <groupId>com.semihunaldi</groupId>
+  <artifactId>excel-orm</artifactId>
+  <version>0.0.1-BETA-SNAPSHOT</version>
+</dependency>
+```
 #### Limitations
 * Every sheet maps to only _ONE_ POJO.
 * Sadly, every time you need to update any data, whole sheet of the excel will be rewritten. This will be a major problem if data is huge. 
