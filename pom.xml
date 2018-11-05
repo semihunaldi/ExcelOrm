@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.semihunaldi</groupId>
     <artifactId>excel-orm</artifactId>
-    <version>0.0.1-BETA-SNAPSHOT</version>
+    <version>0.0.1-BETA</version>
     <packaging>jar</packaging>
 
     <name>excel-orm</name>
@@ -17,7 +15,7 @@
         <connection>scm:git:git://github.com/semihunaldi/ExcelOrm.git</connection>
         <developerConnection>scm:git:ssh://github.com/semihunaldi/ExcelOrm.git</developerConnection>
         <url>https:/github.com/semihunaldi/ExcelOrm</url>
-        <tag>HEAD</tag>
+        <tag>excel-orm-0.0.1-BETA</tag>
     </scm>
 
     <licenses>
