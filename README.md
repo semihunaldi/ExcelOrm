@@ -6,6 +6,19 @@ Experimental Excel ORM library
   <artifactId>excel-orm</artifactId>
   <version>0.0.1-BETA-SNAPSHOT</version>
 </dependency>
+
+<repositories>
+  <repository>
+    <id>oss.sonatype.org-snapshot</id>
+    <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+    <snapshots>
+      <enabled>true</enabled>
+    </snapshots>
+  </repository>
+</repositories>
 ```
 #### Limitations
 * Every sheet maps to only _ONE_ POJO.
