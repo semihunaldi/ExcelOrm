@@ -4,7 +4,7 @@
 
     <groupId>com.semihunaldi</groupId>
     <artifactId>excel-orm</artifactId>
-    <version>0.0.1-BETA-SNAPSHOT</version>
+    <version>0.0.2-BETA-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>excel-orm</name>
